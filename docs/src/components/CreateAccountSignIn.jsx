@@ -3,8 +3,8 @@ function CreateAccountSignIn(props){
     return (
       <div className="max-w-md mx-auto">
         <h1 className="text-2xl font-bold mb-4">{props.isSigningIn ? 'Sign In' : 'Create an Account'}</h1>
-        
-        <form onSubmit={props.handleFormSubmit}>
+      
+        <div>
           <div className="mb-4">
             {/*The htmlFor attribute is used to associate the label with the input field using the id attribute.*/}
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
@@ -60,12 +60,12 @@ function CreateAccountSignIn(props){
           <div className="flex items-center justify-center">
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="submit"
+              onClick={props.handleSubmit}
             >
               {props.isSigningIn ? 'Sign In' : 'Create Account'}
             </button>
           </div>
-        </form>
+        </div>
       </div>
     );
   };

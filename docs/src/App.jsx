@@ -9,7 +9,7 @@ import GameCell from "./components/GameCell"
 import ToggleButton from "./components/ToggleButton"
 import CreateAccountSignIn from "./components/CreateAccountSignIn"
 import {nanoid} from 'nanoid'
-import  axios from "axios";
+import io from 'socket.io-client'
 
 export default function App(){
     // CRETING A VARIABLE BOOLEAN TO CHECK IF GAME HAS BEGAN
@@ -32,6 +32,8 @@ export default function App(){
     const [darkMode, setDarkMode] = React.useState(false)
     // CREATE A BOOLEAN TO CHECK IF ONE HAS SIGNED IN
     const [isSigningIn, setIsSigningIn] = React.useState(false)
+    // CREATE A LIST OF PLAYERS
+    const [pairedPlayers, setPairedPlayers] = React.useState("")
     
     // CREATING A VARIABLE TO TRACK FORM DATA
     const [formData, setFormData] = React.useState({
@@ -304,36 +306,26 @@ export default function App(){
     }
 
     //created an asynchronous function called handleSubmit which is called whwn the form is submitted
-    const handleFormSubmit = async (e) => {
-        //e.prevent default will prevent default form submission behaviour that will cause our page to reload
-        e.preventDefault();
-  
-        try {
-            if (isSigningIn) {
-                // Signing in
-                const response = await fetch('http://localhost:5500/signin',{
-                    method: 'POST',
-                    body: JSON.stringify({formData})
-                })
-
-                if(response.ok){
-                    setInnerPopupText('Sign in was successful')
-                }
-            } else {
-                const response = await fetch('http://localhost:5500/login',{
-                    method: 'POST',
-                    body: JSON.stringify({formData})
-                })
-
-                if(response.ok){
-                    setInnerPopupText('Log in was successful')
-                }
-            }
-
-            setHasSubmittedForm(true)
-        } catch (error) {
-            setInnerPopupText(error.message)
+    const handleFormSubmit = () => {
+        // IF NO VALUE, THEN ALERT US
+        if(formData.name === '' || formData.password === ''){
+            alert("You must fill both fields")
+            return
         }
+
+        // IF THERE ARE VALUES, SEND THEM BACK TO THE SERVER WITH CHECKUSER FUNCTION
+        const socket = io()
+        socket.emit("checkUser", {username: formData.name})
+        setInnerPopupText("Waiting for players")
+
+        // DEALING WITH THE PAIRED PLAYERS FROM SERVER
+        socket.on("sendUser", (data) => {
+            setPairedPlayers(data.pairedPlayers)
+            setHasStarted(false)
+            setHasSubmittedForm(true)
+            setInnerPopupText('')
+            console.log('received by client')
+        })
     };
 
     // FUNCTION TO CHANGE FORM DATA
@@ -410,7 +402,7 @@ export default function App(){
                 {/* THE FORM SELECTION MENU IS CONTAINED HERE */}
                 {!hasSubmittedForm && (
                     <CreateAccountSignIn 
-                        handleSumbit={(e) => handleFormSubmit(e)} 
+                        handleSubmit={handleFormSubmit} 
                         styles={darkMode ? styles.dark.homePage : styles.light.homePage}
                         handleChooseMode={handleChooseMode}
                         formData={formData}
