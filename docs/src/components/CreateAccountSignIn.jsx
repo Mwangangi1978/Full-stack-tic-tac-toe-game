@@ -20,15 +20,16 @@ const CreateAccountSignIn = (props) => {
         try {
             if (isSigningIn) {
             // Signing in
-            await axios.post('/api/login', { name, password });
-            console.log('Signed in successfully!');
+            // Removed the password parameter
+            const { data } = await axios.post('/login',  name , password)
+            console.log('Signed in successfully!',data.username);
             } else {
             // Creating account if the user hana account.
-            await axios.post('/api/signup', { name, password });
-            console.log('Account created successfully!');
+            const {data}=await axios.post('/signup', name,password)
+            console.log('Account created successfully!',data.username);
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.log('Error:', error);
         }
     };
 

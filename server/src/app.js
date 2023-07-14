@@ -1,22 +1,27 @@
-import express from 'express'
-import bcrypt from 'bcrypt'
+const express=require('express')
+const bcrypt=require('bcrypt')
+const cors=require('cors')
+const {gamedata,userdata}=require("../data")
 const app=express()
-const port=8080
+const port=5173
 
-app.listen(port,()=>{
-    console.log(`Server is functional and running on port ${port}`)
-})
+
 // The frontend code bridge should be added here ie:
-/* app.use(express.static('<directory of client folder>'))
-app.use(express.urlencoded({extended:false})) */
+app.use(cors())
+app.use(express.static('../docs/index.html'))
+app.use(express.urlencoded({extended:false}))
 
 
 app.use(express.json())
 
-app.post('/register', async(req,res)=>{
+app.post('/signup', async(req,res)=>{
  try{
     const {username,password}=req.body;
     const hashedPass= await bcrypt.hash(password,10)
+    userdata.push(...userdata,{
+      name:username,
+      password:hashedPass
+    })
     res.status(201).json({
         status:"registered",
         name:username,
@@ -27,26 +32,25 @@ app.post('/register', async(req,res)=>{
  res.status(401).json(error)
  }
 } )
-
+// THIS IS A LOCAL FUNCTION THAT CHECKS USERNAME IS AVALABLE IN DATA.JS FILE 
+// THIS WILL BE REPLACED WHEN THE EXTERNAL DB IS CONNECTED 
+function checkUsername(username){
+ return username===userdata.name
+}
 app.post('/login',async(req,res)=>{
     try {
-        const { username, password } = req.body;
-        // useerdata ni hiyo collection kwa database
-        const { users } = await userdata.find({ name: username });
-        if (users.length === 0){ return res.json({ message: "User not found" })};
-    
-        
-        const passwordMatch = await bcrypt.compare(
-          password,
-          users[0].hashedPassword
-        );
-    
-        if (passwordMatch) {
-          res.json({
-            username,
-          })
-        }
+        const {username,password} = req.body
+        const {user}=await userdata.find(checkUsername)
+        if(user==undefined){return res.status(404).send("User not found")}
+        res.status(200).json({
+          status:"Logged In",
+          username:username,
+          password:password
+        })
       } catch (error) {
         res.json(error);
       }
+})
+app.listen(port,()=>{
+  console.log(`Server is functional and running on port ${port}`)
 })
