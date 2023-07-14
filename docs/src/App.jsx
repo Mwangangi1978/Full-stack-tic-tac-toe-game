@@ -40,8 +40,16 @@ export default function App(){
         [1,4,7],
         [2,5,8]
     ]
-    const startGame = () => {
+    const handleFormSubmit = () => {
+        setHasSubmittedForm(true);
+      };
+    
+      const startGame = () => {
         setHasStarted(true);
+      };
+    
+      const endGame = () => {
+        setHasStarted(false);
       };
     // CREATING A CONST STYLES OBJECT
     const styles={
