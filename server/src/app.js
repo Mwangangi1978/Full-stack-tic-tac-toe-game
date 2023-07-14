@@ -5,7 +5,7 @@ const mongoose=require('mongoose')
 const cors =require('cors')
 const schema = require ('./models/Schema.js')
 const app=express()
-const port=5173
+const port=8080
 
 
 //Middlewares
@@ -82,9 +82,6 @@ app.post('/login',async(req,res)=>{
 })
 
 //Start the server
-app.listen(port,()=>{
-  console.log(`Server is functional and running on port ${port}`)
-})
 app.listen(port,()=>{
   console.log(`Server is functional and running on port ${port}`)
 })
