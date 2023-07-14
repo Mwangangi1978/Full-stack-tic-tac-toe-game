@@ -38,7 +38,7 @@ app.post('/signup', async(req,res)=>{
     const hashedPass= await bcrypt.hash(password,10)
     //Create a new user with hashed password
     const user = new User({
-      username,
+      username:username,
       password: hashedPass
     })
     //Save user to DB
@@ -56,30 +56,33 @@ app.post('/signup', async(req,res)=>{
 } )
 
 //Login route
-app.post('/login',async(req,res)=>{
-    try {
-        const {username,password} = req.body
-        const user = await User.find({username})
-        if(user.length === 0){
-          return res.status(404).send("User not found")
-        }
+app.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
 
-        const passwordMatch = await bcrypt.compare(
-          password,
-          user[0].hashedPassword
-        )
+    // Find the user in the database
+    const user = await User.findOne({ username });
 
-        if(passwordMatch){
+    if (user) {
+      // Compare the provided password with the hashed password
+      const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+      if (isPasswordCorrect) {
         res.status(200).json({
-          status:"Logged In",
-          username:username,
-          password:password
-        })
+          status: 'Logged In',
+          username: username
+        });
+      } else {
+        res.status(401).send('Incorrect password');
       }
-      } catch (error) {
-        res.json(error);
-      }
-})
+    } else {
+      res.status(404).send('Username not found');
+    }
+  } catch (error) {
+    res.json(error);
+  }
+});
+
 
 //Start the server
 app.listen(port,()=>{
