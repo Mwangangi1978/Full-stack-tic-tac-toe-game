@@ -30,28 +30,23 @@ app.post('/signup', async(req,res)=>{
 app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    let userFound = false; // Flag variable to track if a matching username is found
 
-    for (let i = 0; i < userdata.length; i++) {
-      if (username === userdata[i].name) {
-        userFound = true;
-        break; // Exit the loop once a match is found
-      }
-    }
+    const user = userdata.find((user) => user.username === username);
 
-    if (userFound) {
-      res.status(404).send("Username not found");
-    }else{
+    if (user) {
       res.status(200).json({
         status: "Logged In",
         username: username,
         password: password
-      })
+      });
+    } else {
+      res.status(404).send("Username not found");
     }
   } catch (error) {
     res.json(error);
   }
 });
+
 
 app.listen(port,()=>{
   console.log(`Server is functional and running on port ${port}`)

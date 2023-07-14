@@ -1,5 +1,8 @@
 //Importing the react library 
 import React, { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 //importing the axios library which allows us to make http requests
 import  axios from "axios";
@@ -25,14 +28,15 @@ const CreateAccountSignIn = (props) => {
               username:name,
               password:password
             })
-            console.log('Signed in successfully!',data.username);
+            toast.success('Signed in successfully!',data.username);
             } else {
             // Creating account if the user hana account.
             const {data}=await axios.post('http://localhost:8080/signup',{username:name,password:password})
-            console.log('Account created successfully!',data.username);
+            toast.success('Account created successfully!',data.username);
             }
         } catch (error) {
             console.log('Error:', error);
+            toast.error('Error:', error);
         }
     };
 
@@ -100,6 +104,9 @@ const CreateAccountSignIn = (props) => {
             </button>
         </div>
         </form>
+        <div className="max-w-md mx-auto">
+    <ToastContainer />
+  </div>
       </div>
     );
   };
