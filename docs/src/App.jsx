@@ -9,6 +9,7 @@ import GameCell from "./components/GameCell"
 import ToggleButton from "./components/ToggleButton"
 import CreateAccountSignIn from "./components/CreateAccountSignIn"
 import {nanoid} from 'nanoid'
+import  axios from "axios";
 
 export default function App(){
     // CRETING A VARIABLE BOOLEAN TO CHECK IF GAME HAS BEGAN
@@ -29,6 +30,15 @@ export default function App(){
     const [options, setOptions] = React.useState(['', '', '', '', '', '', '', '', ''])
     // CREATING A VARIABLE TO TRACK DARK MODE
     const [darkMode, setDarkMode] = React.useState(false)
+    // CREATE A BOOLEAN TO CHECK IF ONE HAS SIGNED IN
+    const [isSigningIn, setIsSigningIn] = React.useState(false)
+    
+    // CREATING A VARIABLE TO TRACK FORM DATA
+    const [formData, setFormData] = React.useState({
+        name: "",
+        password: ""
+    })
+
     // CREATING A CONSTANT OF WINNING CONDITIONS
     const winningConditions = [
         [0,1,2],
@@ -40,9 +50,6 @@ export default function App(){
         [1,4,7],
         [2,5,8]
     ]
-    const handleFormSubmit = () => {
-        setHasSubmittedForm(true);
-    };
 
     // CREATING A CONST STYLES OBJECT
     const styles={
@@ -201,7 +208,12 @@ export default function App(){
             }
         }
     }
-    
+
+    //The handleChooseMode function sets the isSigningIn state based on the value passed to it. When true is passed, it means the user is signing in, and when false is passed, it means the user is creating an account. This will update the form mode accordingly and change the behavior of the submit button as well.
+    function handleChooseMode(){
+        setIsSigningIn(!isSigningIn);
+    };
+
     // FUNCTION TO DETERMINE PLAYER X
     function choosePlayerX(){
         setCurrentPlayer('X')
@@ -290,6 +302,48 @@ export default function App(){
           return;
         }
     }
+
+    //created an asynchronous function called handleSubmit which is called whwn the form is submitted
+    const handleFormSubmit = async (e) => {
+        //e.prevent default will prevent default form submission behaviour that will cause our page to reload
+        e.preventDefault();
+  
+        try {
+            if (isSigningIn) {
+                // Signing in
+                const response = await fetch('http://localhost:5500/signin',{
+                    method: 'POST',
+                    body: JSON.stringify({formData})
+                })
+
+                if(response.ok){
+                    setInnerPopupText('Sign in was successful')
+                }
+            } else {
+                const response = await fetch('http://localhost:5500/login',{
+                    method: 'POST',
+                    body: JSON.stringify({formData})
+                })
+
+                if(response.ok){
+                    setInnerPopupText('Log in was successful')
+                }
+            }
+
+            setHasSubmittedForm(true)
+        } catch (error) {
+            setInnerPopupText(error.message)
+        }
+    };
+
+    // FUNCTION TO CHANGE FORM DATA
+    function changeFormData(e){
+
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [e.target.name]: e.target.value
+        }))
+    }
     
     // FUNCTION TO CHECK WINNER
     function checkWinner() {
@@ -314,10 +368,10 @@ export default function App(){
         }
 
         changePlayer()
-      }
+    }
 
-        // A USE EFFECT CLEANUP FUNCTION TO CHECK FOR THE WINNER ANYTIME THE GAME CELL INFO CHANGES
-      React.useEffect(() => checkWinner, [options, currentPlayer, hasStarted])
+    // A USE EFFECT CLEANUP FUNCTION TO CHECK FOR THE WINNER ANYTIME THE GAME CELL INFO CHANGES
+    React.useEffect(() => checkWinner, [options, currentPlayer, hasStarted])
       
       // A VARIABLE CONTAINING A FUNCTION TO GENERATE A LIST OF GAME CELLS
     const gameCells = gameCellInfoArray.map(info => (
@@ -353,14 +407,19 @@ export default function App(){
                     themeStyles={darkMode ? styles.dark.progressBar : styles.light.progressBar}
                 />}
 
-                {/* THE SELECTION MENU IS CONTAINED HERE */}
+                {/* THE FORM SELECTION MENU IS CONTAINED HERE */}
                 {!hasSubmittedForm && (
                     <CreateAccountSignIn 
-                        handleSumbit={handleFormSubmit} 
+                        handleSumbit={(e) => handleFormSubmit(e)} 
                         styles={darkMode ? styles.dark.homePage : styles.light.homePage}
+                        handleChooseMode={handleChooseMode}
+                        formData={formData}
+                        isSigningIn={isSigningIn}
+                        changeFormData={(e) => changeFormData(e)}
                     />
                 )}
                 
+                {/* THE GAME SELECTION MENU IS CONTAINED HERE */}
                 {!hasStarted && hasSubmittedForm && (
                     <HomePage
                     choosePlayerX={choosePlayerX}
