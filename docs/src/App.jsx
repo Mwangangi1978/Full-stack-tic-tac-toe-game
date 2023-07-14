@@ -34,6 +34,8 @@ export default function App(){
     const [isSigningIn, setIsSigningIn] = React.useState(false)
     // CREATE A LIST OF PLAYERS
     const [pairedPlayers, setPairedPlayers] = React.useState("")
+    //ADDED STATE FOR SOCKET INSTANCE
+    const [socket, setSocket] = React.useState(null)
     
     // CREATING A VARIABLE TO TRACK FORM DATA
     const [formData, setFormData] = React.useState({
@@ -313,24 +315,23 @@ export default function App(){
             return
         }
 
-        // IF THERE ARE VALUES, SEND THEM BACK TO THE SERVER WITH CHECKUSER FUNCTION
-        const socket = io()
-        socket.emit("checkUser", {username: formData.name})
-        setInnerPopupText("Waiting for players")
+        
+    // DEALING WITH THE PAIRED PLAYERS FROM SERVER
+    socket.on("sendUser", (data) => {
+        setPairedPlayers(data.pairedPlayers);
+        setHasStarted(false);
+        setHasSubmittedForm(true);
+        setInnerPopupText("");
+        console.log("received by client");
+    });
 
-        // DEALING WITH THE PAIRED PLAYERS FROM SERVER
-        socket.on("sendUser", (data) => {
-            setPairedPlayers(data.pairedPlayers)
-            setHasStarted(false)
-            setHasSubmittedForm(true)
-            setInnerPopupText('')
-            console.log('received by client')
-        })
+    // SEND CHECKUSER EVENT TO THE SERVER
+    socket.emit("checkUser", { username: formData.name });
+    setInnerPopupText("Waiting for players");
     };
 
     // FUNCTION TO CHANGE FORM DATA
     function changeFormData(e){
-
         setFormData(prevFormData => ({
             ...prevFormData,
             [e.target.name]: e.target.value
@@ -362,8 +363,25 @@ export default function App(){
         changePlayer()
     }
 
+    //A FUNCTION TO CONNECT THE SOCKETS WHEN POSSIBLE BEFORE RUNNING THEM THROUGH USEEFFECT
+    const handleConnectSocket = () => {
+        const newSocket = io()
+        setSocket(newSocket)
+    };
+
     // A USE EFFECT CLEANUP FUNCTION TO CHECK FOR THE WINNER ANYTIME THE GAME CELL INFO CHANGES
     React.useEffect(() => checkWinner, [options, currentPlayer, hasStarted])
+   
+    // A USE EFFECT TO HANDLE USER CONNECTIONS AS A CLEANUP IT DISCONNECTS CONNECTIONS
+    React.useEffect(() => {
+        handleConnectSocket()
+
+        return () => {
+            if (socket) {
+                socket.disconnect()
+            }
+        };
+    }, [])
       
       // A VARIABLE CONTAINING A FUNCTION TO GENERATE A LIST OF GAME CELLS
     const gameCells = gameCellInfoArray.map(info => (
