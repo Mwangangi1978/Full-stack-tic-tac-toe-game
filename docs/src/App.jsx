@@ -7,6 +7,7 @@ import HomePage from "./components/HomePage"
 import PopupText from "./components/PopupText"
 import GameCell from "./components/GameCell"
 import ToggleButton from "./components/ToggleButton"
+import CreateAccountSignIn from "./components/CreateAccountSignIn"
 import {nanoid} from 'nanoid'
 
 export default function App(){
