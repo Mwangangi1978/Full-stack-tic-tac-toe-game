@@ -7,11 +7,14 @@ import HomePage from "./components/HomePage"
 import PopupText from "./components/PopupText"
 import GameCell from "./components/GameCell"
 import ToggleButton from "./components/ToggleButton"
+import CreateAccountSignIn from "./components/CreateAccountSignIn"
 import {nanoid} from 'nanoid'
 
 export default function App(){
     // CRETING A VARIABLE BOOLEAN TO CHECK IF GAME HAS BEGAN
     const [hasStarted, setHasStarted] = React.useState(false)
+    //CREATING A VARIABLE TO CHECK IF USER HAS SUBMITTED FORM.(NEW)
+    const [hasSubmittedForm, setHasSubmittedForm] = React.useState(false);
     // CREATING A VARIABLE BOOLEAN TO DETERMINE WINNER
     const [wonGame, setWonGame] = React.useState(false)
     // CREATING A VARIABLE BOOLEAN TO DETERMINE CURRENT PLAYER
@@ -37,6 +40,10 @@ export default function App(){
         [1,4,7],
         [2,5,8]
     ]
+    const handleFormSubmit = () => {
+        setHasSubmittedForm(true);
+    };
+
     // CREATING A CONST STYLES OBJECT
     const styles={
         dark:{
@@ -347,11 +354,19 @@ export default function App(){
                 />}
 
                 {/* THE SELECTION MENU IS CONTAINED HERE */}
-                {!hasStarted && <HomePage
+                {!hasSubmittedForm && (
+                    <CreateAccountSignIn 
+                        handleSumbit={handleFormSubmit} 
+                        styles={darkMode ? styles.dark.homePage : styles.light.homePage}
+                    />
+                )}
+                
+                {!hasStarted && hasSubmittedForm && (
+                    <HomePage
                     choosePlayerX={choosePlayerX}
                     choosePlayerO={choosePlayerO}
                     styles={darkMode ? styles.dark.homePage : styles.light.homePage}
-                />}  
+                />)}  
 
                 {/* THE CONTAINER FOR GRID IS CONTAINED HERE */}
                 {hasStarted  && <div className="grid grid-flow-row grid-cols-3 gap-[10px] transition-all duration-500">
@@ -359,11 +374,11 @@ export default function App(){
                 </div>}
 
                 {/* THE BUTTON IS LOCATED HERE TO START OR RESET GAME*/}
-                <Button
+                {hasSubmittedForm && <Button
                     handleClick={hasStarted ? endGame : startGame}
                     innerButtonText={innerButtonText}
                     styles={darkMode ? styles.dark.button : styles.light.button}
-                />
+                />}
 
                 {/* THE TOGGLE BUTTON RESPONSIBLE FOR CHANGING THEMES IS LOCATED HERE */}
                 <ToggleButton
