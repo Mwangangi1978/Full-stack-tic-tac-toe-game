@@ -34,6 +34,13 @@ const CreateAccountSignIn = () => {
             console.error('Error:', error);
         }
     };
+
+    
+    //The handleChooseMode function sets the isSigningIn state based on the value passed to it. When true is passed, it means the user is signing in, and when false is passed, it means the user is creating an account. This will update the form mode accordingly and change the behavior of the submit button as well.
+    const handleChooseMode = (isSigningIn) => {
+      setIsSigningIn(isSigningIn);
+    };
+  
   
     return (
       <div className="max-w-md mx-auto">
@@ -64,23 +71,32 @@ const CreateAccountSignIn = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className="flex items-center justify-center">
+          {/*button for user to choose that he is signing in or creating account. Clicking each button will call the handleChooseMode function with the appropriate isSigningIn value.*/}
+          <div className="mt-4 text-center">
+          <button
+            className="text-blue-500 hover:underline focus:outline-none"
+            type="button"
+            onClick={() => handleChooseMode(true)}
+          >
+            Sign In
+          </button>
+          <span className="mx-2">or</span>
+          <button
+            className="text-blue-500 hover:underline focus:outline-none"
+            type="button"
+            onClick={() => handleChooseMode(false)}
+          >
+            Create an Account
+          </button>
+        </div>
+        <div className="flex items-center justify-center">
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               {isSigningIn ? 'Sign In' : 'Create Account'}
             </button>
-          </div>
-          <div className="mt-4 text-center">
-            <button
-              className="text-blue-500 hover:underline focus:outline-none"
-              type="button"
-              onClick={() => setIsSigningIn(!isSigningIn)}
-            >
-              {isSigningIn ? 'Create an Account' : 'Sign In'}
-            </button>
-          </div>
+        </div>
         </form>
       </div>
     );
