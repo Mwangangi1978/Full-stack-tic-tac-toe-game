@@ -14,24 +14,31 @@ const CreateAccountSignIn = (props) => {
 
     //created an asynchronous function called handleSubmit which is called whwn the form is submitted
     const handleSubmit = async (e) => {
-        //e.prevent default will prevent default form submission behaviour that will cause our page to reload
-        e.preventDefault();
-  
-        try {
-            if (isSigningIn) {
-            // Signing in
-            // Removed the password parameter
-            const { data } = await axios.post('/login',  name , password)
-            console.log('Signed in successfully!',data.username);
-            } else {
-            // Creating account if the user hana account.
-            const {data}=await axios.post('/signup', name,password)
-            console.log('Account created successfully!',data.username);
-            }
-        } catch (error) {
-            console.log('Error:', error);
-        }
-    };
+      //e.prevent default will prevent default form submission behaviour that will cause our page to reload
+      e.preventDefault();
+
+      try {
+          if (isSigningIn) {
+          // Signing in
+          // Removed the password parameter
+          const { data } = await axios.post('http://localhost:8080/login',{
+            username:name,
+            password:password
+          })
+          console.log('Signed in successfully!',data.username);
+          toast.success('Signed in successfully!',data.username);
+          } else {
+          // Creating account if the user hana account.
+          const {data}=await axios.post('http://localhost:8080/signup',{username:name,password:password})
+          console.log('Account created successfully!',data.username);
+          toast.success('Account created successfully!',data.username);
+          }
+      } catch (error) {
+          console.log('Error:', error);
+          toast.error('Error:', error);
+      }
+  };
+
 
     
     //The handleChooseMode function sets the isSigningIn state based on the value passed to it. When true is passed, it means the user is signing in, and when false is passed, it means the user is creating an account. This will update the form mode accordingly and change the behavior of the submit button as well.

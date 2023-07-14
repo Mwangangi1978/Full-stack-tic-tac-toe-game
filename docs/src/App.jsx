@@ -356,7 +356,7 @@ export default function App(){
                 {/* THE SELECTION MENU IS CONTAINED HERE */}
                 {!hasSubmittedForm && (
                     <CreateAccountSignIn 
-                        handleSumbit={handleFormSubmit} 
+                        handleSubmit={handleFormSubmit} 
                         styles={darkMode ? styles.dark.homePage : styles.light.homePage}
                     />
                 )}
