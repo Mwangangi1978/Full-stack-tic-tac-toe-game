@@ -14,7 +14,7 @@ export default function App(){
     // CRETING A VARIABLE BOOLEAN TO CHECK IF GAME HAS BEGAN
     const [hasStarted, setHasStarted] = React.useState(false)
     //CREATING A VARIABLE TO CHECK IF USER HAS SUBMITTED FORM.(NEW)
-    const [hasSubmittedForm, setHasSubmittedForm] = useState(false);
+    const [hasSubmittedForm, setHasSubmittedForm] = React.useState(false);
     // CREATING A VARIABLE BOOLEAN TO DETERMINE WINNER
     const [wonGame, setWonGame] = React.useState(false)
     // CREATING A VARIABLE BOOLEAN TO DETERMINE CURRENT PLAYER
@@ -42,15 +42,8 @@ export default function App(){
     ]
     const handleFormSubmit = () => {
         setHasSubmittedForm(true);
-      };
-    
-      const startGame = () => {
-        setHasStarted(true);
-      };
-    
-      const endGame = () => {
-        setHasStarted(false);
-      };
+    };
+
     // CREATING A CONST STYLES OBJECT
     const styles={
         dark:{
@@ -362,8 +355,12 @@ export default function App(){
 
                 {/* THE SELECTION MENU IS CONTAINED HERE */}
                 {!hasSubmittedForm && (
-                    <CreateAccountSignIn onSubmit={handleFormSubmit} styles={darkMode ? styles.dark.homePage : styles.light.homePage}/>
+                    <CreateAccountSignIn 
+                        handleSumbit={handleFormSubmit} 
+                        styles={darkMode ? styles.dark.homePage : styles.light.homePage}
+                    />
                 )}
+                
                 {!hasStarted && hasSubmittedForm && (
                     <HomePage
                     choosePlayerX={choosePlayerX}
@@ -377,11 +374,11 @@ export default function App(){
                 </div>}
 
                 {/* THE BUTTON IS LOCATED HERE TO START OR RESET GAME*/}
-                <Button
+                {hasSubmittedForm && <Button
                     handleClick={hasStarted ? endGame : startGame}
                     innerButtonText={innerButtonText}
                     styles={darkMode ? styles.dark.button : styles.light.button}
-                />
+                />}
 
                 {/* THE TOGGLE BUTTON RESPONSIBLE FOR CHANGING THEMES IS LOCATED HERE */}
                 <ToggleButton

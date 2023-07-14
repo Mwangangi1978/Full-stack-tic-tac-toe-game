@@ -4,11 +4,8 @@ import React, { useState } from "react";
 //importing the axios library which allows us to make http requests
 import  axios from "axios";
 
-
-
-
 //CREATING A COMPONENT WHICH ALLOWS USER TO TOGGLE BETWEEN CREATING AN ACCOUNT  AND SIGNING IN WITH A GAMENAME AND A PASSWORD.
-const CreateAccountSignIn = () => {
+const CreateAccountSignIn = (props) => {
     //WE WANT TO KEEP TRACK OF THE USERS GAME NAME, Password or whether or not the user has created an account HENCE WE USE USESTATE -inatusaidia so that we can create a state variable (name) and a way of upating its value
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
@@ -49,7 +46,7 @@ const CreateAccountSignIn = () => {
           <div className="mb-4">
             {/*The htmlFor attribute is used to associate the label with the input field using the id attribute.*/}.
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-              Game Name:
+              UserName:
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -93,6 +90,7 @@ const CreateAccountSignIn = () => {
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
+              onClick={props.handleSubmit}
             >
               {isSigningIn ? 'Sign In' : 'Create Account'}
             </button>
