@@ -10,6 +10,7 @@ import ToggleButton from "./components/ToggleButton"
 import CreateAccountSignIn from "./components/CreateAccountSignIn"
 import {nanoid} from 'nanoid'
 
+
 export default function App(){
     // CRETING A VARIABLE BOOLEAN TO CHECK IF GAME HAS BEGAN
     const [hasStarted, setHasStarted] = React.useState(false)
@@ -333,6 +334,7 @@ export default function App(){
       
     return(
         // THE WHOLE GAME IS IN THIS CONTAINER BELOW
+        
         <main 
             className="min-h-[100vh] font-['Fredoka'] transition-all duration-500 flex justify-center items-center"
             style={darkMode ? styles.dark.main : styles.light.main}
@@ -356,7 +358,7 @@ export default function App(){
                 {/* THE SELECTION MENU IS CONTAINED HERE */}
                 {!hasSubmittedForm && (
                     <CreateAccountSignIn 
-                        handleSumbit={handleFormSubmit} 
+                        handleSubmit={handleFormSubmit} 
                         styles={darkMode ? styles.dark.homePage : styles.light.homePage}
                     />
                 )}
@@ -405,5 +407,6 @@ export default function App(){
                 </footer>
             </div>
         </main>
+        
         )
     }

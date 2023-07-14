@@ -36,7 +36,7 @@ const CreateAccountSignIn = (props) => {
             }
         } catch (error) {
             console.log('Error:', error);
-            toast.error('Error:', error);
+            toast.error('Error: Username not found', error);
         }
     };
 
