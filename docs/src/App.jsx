@@ -13,6 +13,8 @@ import {nanoid} from 'nanoid'
 export default function App(){
     // CRETING A VARIABLE BOOLEAN TO CHECK IF GAME HAS BEGAN
     const [hasStarted, setHasStarted] = React.useState(false)
+    //CREATING A VARIABLE TO CHECK IF USER HAS SUBMITTED FORM.(NEW)
+    const [hasSubmittedForm, setHasSubmittedForm] = useState(false);
     // CREATING A VARIABLE BOOLEAN TO DETERMINE WINNER
     const [wonGame, setWonGame] = React.useState(false)
     // CREATING A VARIABLE BOOLEAN TO DETERMINE CURRENT PLAYER
@@ -38,6 +40,17 @@ export default function App(){
         [1,4,7],
         [2,5,8]
     ]
+    const handleFormSubmit = () => {
+        setHasSubmittedForm(true);
+      };
+    
+      const startGame = () => {
+        setHasStarted(true);
+      };
+    
+      const endGame = () => {
+        setHasStarted(false);
+      };
     // CREATING A CONST STYLES OBJECT
     const styles={
         dark:{
@@ -348,11 +361,15 @@ export default function App(){
                 />}
 
                 {/* THE SELECTION MENU IS CONTAINED HERE */}
-                {!hasStarted && <HomePage
+                {!hasSubmittedForm && (
+                    <CreateAccountSignIn onSubmit={handleFormSubmit} styles={darkMode ? styles.dark.homePage : styles.light.homePage}/>
+                )}
+                {!hasStarted && hasSubmittedForm && (
+                    <HomePage
                     choosePlayerX={choosePlayerX}
                     choosePlayerO={choosePlayerO}
                     styles={darkMode ? styles.dark.homePage : styles.light.homePage}
-                />}  
+                />)}  
 
                 {/* THE CONTAINER FOR GRID IS CONTAINED HERE */}
                 {hasStarted  && <div className="grid grid-flow-row grid-cols-3 gap-[10px] transition-all duration-500">
