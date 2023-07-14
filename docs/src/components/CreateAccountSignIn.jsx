@@ -21,11 +21,14 @@ const CreateAccountSignIn = (props) => {
             if (isSigningIn) {
             // Signing in
             // Removed the password parameter
-            const { data } = await axios.post('/login',  name , password)
+            const { data } = await axios.post('http://localhost:8080/login',{
+              username:name,
+              password:password
+            })
             console.log('Signed in successfully!',data.username);
             } else {
             // Creating account if the user hana account.
-            const {data}=await axios.post('/signup', name,password)
+            const {data}=await axios.post('http://localhost:8080/signup',{username:name,password:password})
             console.log('Account created successfully!',data.username);
             }
         } catch (error) {

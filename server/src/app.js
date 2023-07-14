@@ -3,25 +3,17 @@ const bcrypt=require('bcrypt')
 const cors=require('cors')
 const {gamedata,userdata}=require("../data")
 const app=express()
-const port=5173
+const port=8080
 
 
-// The frontend code bridge should be added here ie:
-app.use(cors())
-app.use(express.static('../docs/index.html'))
-app.use(express.urlencoded({extended:false}))
 
 
 app.use(express.json())
-
+app.use(cors())
 app.post('/signup', async(req,res)=>{
  try{
     const {username,password}=req.body;
     const hashedPass= await bcrypt.hash(password,10)
-    userdata.push(...userdata,{
-      name:username,
-      password:hashedPass
-    })
     res.status(201).json({
         status:"registered",
         name:username,
@@ -35,7 +27,7 @@ app.post('/signup', async(req,res)=>{
 // THIS IS A LOCAL FUNCTION THAT CHECKS USERNAME IS AVALABLE IN DATA.JS FILE 
 // THIS WILL BE REPLACED WHEN THE EXTERNAL DB IS CONNECTED 
 function checkUsername(username){
- return username===userdata.name
+ return username===userdata[1].name
 }
 app.post('/login',async(req,res)=>{
     try {
