@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import  axios from "axios";
 
 //CREATING A COMPONENT WHICH ALLOWS USER TO TOGGLE BETWEEN CREATING AN ACCOUNT  AND SIGNING IN WITH A GAMENAME AND A PASSWORD.
-const CreateAccountSignIn = (props) => {
+const CreateAccountSignIn = () => {
     //WE WANT TO KEEP TRACK OF THE USERS GAME NAME, Password or whether or not the user has created an account HENCE WE USE USESTATE -inatusaidia so that we can create a state variable (name) and a way of upating its value
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
@@ -34,7 +34,7 @@ const CreateAccountSignIn = (props) => {
             const {data}=await axios.post('http://localhost:8080/signup',{username:name,password:password})
             toast.success(`Account created successfully!`);
             }
-           props.setHasSubmittedForm(true)
+           setHasSubmittedForm(true)
         } catch (error) {
           console.log('Error:', error.response);
           const errorMessage =
@@ -54,9 +54,9 @@ const CreateAccountSignIn = (props) => {
   
     return (
       <div className="max-w-md mx-auto">
-        <h1 className="text-2xl font-bold mb-4">{props.isSigningIn ? 'Sign In' : 'Create an Account'}</h1>
+        <h1 className="text-2xl font-bold mb-4">{isSigningIn ? 'Sign In' : 'Create an Account'}</h1>
       
-        <div>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             {/*The htmlFor attribute is used to associate the label with the input field using the id attribute.*/}
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
@@ -68,8 +68,8 @@ const CreateAccountSignIn = (props) => {
               id="name"
               name="name"
               type="text"
-              value={props.formData.name}
-              onChange={props.changeFormData}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
           
@@ -82,8 +82,8 @@ const CreateAccountSignIn = (props) => {
               id="password"
               name="password"
               type="password"
-              value={props.formData.password}
-              onChange={props.changeFormData}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           
@@ -92,7 +92,7 @@ const CreateAccountSignIn = (props) => {
             <button
               className="text-blue-500 hover:underline focus:outline-none"
               type="button"
-              onClick={props.handleChooseMode}
+              onClick={handleChooseMode}
             >
               Sign In
             </button>
@@ -102,7 +102,7 @@ const CreateAccountSignIn = (props) => {
             <button
               className="text-blue-500 hover:underline focus:outline-none"
               type="button"
-              onClick={props.handleChooseMode}
+              onClick={handleChooseMode}
             >
               Create an Account
             </button>
@@ -112,15 +112,16 @@ const CreateAccountSignIn = (props) => {
           <div className="flex items-center justify-center">
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              onClick={props.handleSubmit}
+              type="submit"
             >
               {props.isSigningIn ? 'Sign In' : 'Create Account'}
             </button>
-        </div>
+          </div>
         </form>
+        
         <div className="max-w-md mx-auto">
-    <ToastContainer />
-  </div>
+          <ToastContainer />
+        </div>
       </div>
     );
   };

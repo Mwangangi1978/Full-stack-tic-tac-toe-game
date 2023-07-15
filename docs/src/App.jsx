@@ -35,10 +35,6 @@ export default function App(){
     const [darkMode, setDarkMode] = React.useState(false)
     // CREATE A BOOLEAN TO CHECK IF ONE HAS SIGNED IN
     const [isSigningIn, setIsSigningIn] = React.useState(false)
-    // CREATE A LIST OF PLAYERS
-    const [pairedPlayers, setPairedPlayers] = React.useState("")
-    //ADDED STATE FOR SOCKET INSTANCE
-    const [socket, setSocket] = React.useState(io('http://localhost:5173/'))
     
     // CREATING A VARIABLE TO TRACK FORM DATA
     const [formData, setFormData] = React.useState({
@@ -313,17 +309,6 @@ export default function App(){
         }
     }
 
-    //created an asynchronous function called handleSubmit which is called whwn the form is submitted
-    const handleFormSubmit = () => {
-        // IF NO VALUE, THEN ALERT US
-        if(formData.name === '' || formData.password === ''){
-            alert("You must fill both fields")
-            return
-        }
-
-        setInnerPopupText("Waiting for players");
-    };
-
     // FUNCTION TO CHANGE FORM DATA
     function changeFormData(e){
         setFormData(prevFormData => ({
@@ -359,28 +344,6 @@ export default function App(){
 
     // A USE EFFECT CLEANUP FUNCTION TO CHECK FOR THE WINNER ANYTIME THE GAME CELL INFO CHANGES
     React.useEffect(() => checkWinner, [options, currentPlayer, hasStarted])
-   
-    // A USE EFFECT TO HANDLE USER CONNECTIONS AS A CLEANUP IT DISCONNECTS CONNECTIONS
-    React.useEffect(() => {
-
-        // DEALING WITH THE PAIRED PLAYERS FROM SERVER
-        socket.on("sendUser", (data) => {
-            setPairedPlayers(data.pairedPlayers);
-            setHasStarted(false);
-            setHasSubmittedForm(true);
-            setInnerPopupText("");
-            console.log("received by client");
-        });
-
-        // SEND CHECKUSER EVENT TO THE SERVER
-        socket.emit("checkUser", { username: formData.name });
-
-        return () => {
-            if (socket) {
-                socket.disconnect()
-            }
-        };
-    }, [socket])
       
       // A VARIABLE CONTAINING A FUNCTION TO GENERATE A LIST OF GAME CELLS
     const gameCells = gameCellInfoArray.map(info => (

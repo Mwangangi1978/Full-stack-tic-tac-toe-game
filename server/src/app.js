@@ -11,7 +11,6 @@ const port=8080
 //Middlewares
 //To enable Cross-Origin Resource Sharing
 app.use(cors())
-app.use(express.static('../docs/index.html'))
 app.use(express.urlencoded({extended:false}))
 app.use(express.json())
 
