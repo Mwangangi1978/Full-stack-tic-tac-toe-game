@@ -18,7 +18,7 @@ dotenv.config()
 // CONNECT TO DB
 connectDB()
 
-const port = process.env.PORT_NUMBER || 5500
+const port = process.env.PORT_NUMBER || 5173
 
 // MIDDLEWARES
 app.use(cors())
@@ -32,7 +32,7 @@ const receivedPlayersArray = []
 io.on("connection", (socket) => {
     socket.on("checkUser", (data) => {
         if(data.username){
-            receivedPlayersArray.push(username)
+            receivedPlayersArray.push(data.username)
 
             // ONLY PAIR 1ST 2 PLAYERS
             if(receivedPlayersArray.length >= 2){

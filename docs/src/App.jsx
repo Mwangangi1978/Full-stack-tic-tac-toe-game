@@ -35,7 +35,7 @@ export default function App(){
     // CREATE A LIST OF PLAYERS
     const [pairedPlayers, setPairedPlayers] = React.useState("")
     //ADDED STATE FOR SOCKET INSTANCE
-    const [socket, setSocket] = React.useState(null)
+    const [socket, setSocket] = React.useState(io('http://localhost:5173/'))
     
     // CREATING A VARIABLE TO TRACK FORM DATA
     const [formData, setFormData] = React.useState({
@@ -315,19 +315,7 @@ export default function App(){
             return
         }
 
-        
-    // DEALING WITH THE PAIRED PLAYERS FROM SERVER
-    socket.on("sendUser", (data) => {
-        setPairedPlayers(data.pairedPlayers);
-        setHasStarted(false);
-        setHasSubmittedForm(true);
-        setInnerPopupText("");
-        console.log("received by client");
-    });
-
-    // SEND CHECKUSER EVENT TO THE SERVER
-    socket.emit("checkUser", { username: formData.name });
-    setInnerPopupText("Waiting for players");
+        setInnerPopupText("Waiting for players");
     };
 
     // FUNCTION TO CHANGE FORM DATA
@@ -363,25 +351,30 @@ export default function App(){
         changePlayer()
     }
 
-    //A FUNCTION TO CONNECT THE SOCKETS WHEN POSSIBLE BEFORE RUNNING THEM THROUGH USEEFFECT
-    const handleConnectSocket = () => {
-        const newSocket = io()
-        setSocket(newSocket)
-    };
-
     // A USE EFFECT CLEANUP FUNCTION TO CHECK FOR THE WINNER ANYTIME THE GAME CELL INFO CHANGES
     React.useEffect(() => checkWinner, [options, currentPlayer, hasStarted])
    
     // A USE EFFECT TO HANDLE USER CONNECTIONS AS A CLEANUP IT DISCONNECTS CONNECTIONS
     React.useEffect(() => {
-        handleConnectSocket()
+
+        // DEALING WITH THE PAIRED PLAYERS FROM SERVER
+        socket.on("sendUser", (data) => {
+            setPairedPlayers(data.pairedPlayers);
+            setHasStarted(false);
+            setHasSubmittedForm(true);
+            setInnerPopupText("");
+            console.log("received by client");
+        });
+
+        // SEND CHECKUSER EVENT TO THE SERVER
+        socket.emit("checkUser", { username: formData.name });
 
         return () => {
             if (socket) {
                 socket.disconnect()
             }
         };
-    }, [])
+    }, [socket])
       
       // A VARIABLE CONTAINING A FUNCTION TO GENERATE A LIST OF GAME CELLS
     const gameCells = gameCellInfoArray.map(info => (
