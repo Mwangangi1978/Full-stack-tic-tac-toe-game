@@ -73,10 +73,10 @@ app.post('/login', async (req, res) => {
           username: username
         });
       } else {
-        res.status(401).send('Incorrect password');
+        res.status(401).json({Error:'Incorrect password'});
       }
     } else {
-      res.status(404).send('Username not found');
+      res.status(404).json({Error:'Username not found'});
     }
   } catch (error) {
     res.json(error);
