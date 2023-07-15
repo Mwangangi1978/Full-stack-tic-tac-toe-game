@@ -1,5 +1,5 @@
 import React from "react"
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NameFooter from "./components/NameFooter"
 import CreditsFooter from "./components/CreditsFooter"
@@ -11,7 +11,6 @@ import GameCell from "./components/GameCell"
 import ToggleButton from "./components/ToggleButton"
 import CreateAccountSignIn from "./components/CreateAccountSignIn"
 import {nanoid} from 'nanoid'
-import io from 'socket.io-client'
 
 
 export default function App(){
@@ -382,14 +381,9 @@ export default function App(){
 
                 {/* THE FORM SELECTION MENU IS CONTAINED HERE */}
                 {!hasSubmittedForm && (
-                    <CreateAccountSignIn
-                    setHasSubmittedForm={setHasSubmittedForm} 
+                    <CreateAccountSignIn 
                         handleSubmit={handleFormSubmit} 
                         styles={darkMode ? styles.dark.homePage : styles.light.homePage}
-                        handleChooseMode={handleChooseMode}
-                        formData={formData}
-                        isSigningIn={isSigningIn}
-                        changeFormData={(e) => changeFormData(e)}
                     />
                 )}
                 
