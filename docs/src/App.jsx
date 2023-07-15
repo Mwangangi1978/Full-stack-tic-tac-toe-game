@@ -1,4 +1,6 @@
 import React from "react"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import NameFooter from "./components/NameFooter"
 import CreditsFooter from "./components/CreditsFooter"
 import Button from "./components/Button"
@@ -42,7 +44,7 @@ export default function App(){
         [2,5,8]
     ]
     const handleFormSubmit = () => {
-        setHasSubmittedForm(true);
+        setHasSubmittedForm(setHasSubmittedForm);
     };
 
     // CREATING A CONST STYLES OBJECT
@@ -357,7 +359,8 @@ export default function App(){
 
                 {/* THE SELECTION MENU IS CONTAINED HERE */}
                 {!hasSubmittedForm && (
-                    <CreateAccountSignIn 
+                    <CreateAccountSignIn
+                    setHasSubmittedForm={setHasSubmittedForm} 
                         handleSubmit={handleFormSubmit} 
                         styles={darkMode ? styles.dark.homePage : styles.light.homePage}
                     />
@@ -405,6 +408,9 @@ export default function App(){
                         styles={darkMode ? styles.dark.creditsFooter : styles.light.creditsFooter}
                     />
                 </footer>
+                <div className="max-w-md mx-auto">
+                  <ToastContainer />
+                </div>
             </div>
         </main>
         

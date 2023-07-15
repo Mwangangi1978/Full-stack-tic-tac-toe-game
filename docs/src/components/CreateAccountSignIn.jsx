@@ -28,15 +28,20 @@ const CreateAccountSignIn = (props) => {
               username:name,
               password:password
             })
-            toast.success('Signed in successfully!',data.username);
+            toast.success(`Signed in successfully! ${data.username}`);
             } else {
             // Creating account if the user hana account.
             const {data}=await axios.post('http://localhost:8080/signup',{username:name,password:password})
-            toast.success('Account created successfully!',data.username);
+            toast.success(`Account created successfully!`);
             }
+           props.setHasSubmittedForm(true)
         } catch (error) {
-            console.log('Error:', error);
-            toast.error('Error: Username not found', error);
+          console.log('Error:', error.response);
+          const errorMessage =
+            error.response && error.response.data && error.response.data.Error
+              ? error.response.data.Error
+              : 'An error occurred';
+          toast.error(errorMessage);
         }
     };
 
