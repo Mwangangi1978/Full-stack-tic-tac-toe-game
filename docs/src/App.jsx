@@ -11,6 +11,7 @@ import CreateAccountSignIn from "./components/CreateAccountSignIn"
 import {nanoid} from 'nanoid'
 import io from 'socket.io-client'
 
+
 export default function App(){
     // CRETING A VARIABLE BOOLEAN TO CHECK IF GAME HAS BEGAN
     const [hasStarted, setHasStarted] = React.useState(false)
@@ -390,6 +391,7 @@ export default function App(){
       
     return(
         // THE WHOLE GAME IS IN THIS CONTAINER BELOW
+        
         <main 
             className="min-h-[100vh] font-['Fredoka'] transition-all duration-500 flex justify-center items-center"
             style={darkMode ? styles.dark.main : styles.light.main}
@@ -467,5 +469,6 @@ export default function App(){
                 </footer>
             </div>
         </main>
+        
         )
     }

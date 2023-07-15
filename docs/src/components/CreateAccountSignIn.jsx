@@ -1,5 +1,52 @@
+//Importing the react library 
+import React, { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+//importing the axios library which allows us to make http requests
+import  axios from "axios";
+
 //CREATING A COMPONENT WHICH ALLOWS USER TO TOGGLE BETWEEN CREATING AN ACCOUNT  AND SIGNING IN WITH A GAMENAME AND A PASSWORD.
-function CreateAccountSignIn(props){
+const CreateAccountSignIn = (props) => {
+    //WE WANT TO KEEP TRACK OF THE USERS GAME NAME, Password or whether or not the user has created an account HENCE WE USE USESTATE -inatusaidia so that we can create a state variable (name) and a way of upating its value
+    const [name, setName] = useState('');
+    const [password, setPassword] = useState('');
+    const [isSigningIn, setIsSigningIn] = useState(false); 
+
+
+    //created an asynchronous function called handleSubmit which is called whwn the form is submitted
+    const handleSubmit = async (e) => {
+        //e.prevent default will prevent default form submission behaviour that will cause our page to reload
+        e.preventDefault();
+  
+        try {
+            if (isSigningIn) {
+            // Signing in
+            // Removed the password parameter
+            const { data } = await axios.post('http://localhost:8080/login',{
+              username:name,
+              password:password
+            })
+            toast.success('Signed in successfully!',data.username);
+            } else {
+            // Creating account if the user hana account.
+            const {data}=await axios.post('http://localhost:8080/signup',{username:name,password:password})
+            toast.success('Account created successfully!',data.username);
+            }
+        } catch (error) {
+            console.log('Error:', error);
+            toast.error('Error: Username not found', error);
+        }
+    };
+
+    
+    //The handleChooseMode function sets the isSigningIn state based on the value passed to it. When true is passed, it means the user is signing in, and when false is passed, it means the user is creating an account. This will update the form mode accordingly and change the behavior of the submit button as well.
+    const handleChooseMode = (isSigningIn) => {
+      setIsSigningIn(isSigningIn);
+    };
+  
+  
     return (
       <div className="max-w-md mx-auto">
         <h1 className="text-2xl font-bold mb-4">{props.isSigningIn ? 'Sign In' : 'Create an Account'}</h1>
@@ -64,8 +111,11 @@ function CreateAccountSignIn(props){
             >
               {props.isSigningIn ? 'Sign In' : 'Create Account'}
             </button>
-          </div>
         </div>
+        </form>
+        <div className="max-w-md mx-auto">
+    <ToastContainer />
+  </div>
       </div>
     );
   };
